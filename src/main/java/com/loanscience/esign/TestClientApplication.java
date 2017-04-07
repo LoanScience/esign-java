@@ -9,11 +9,15 @@ import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.properties.ConfigurationProperties;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.*;
 import org.springframework.web.client.HttpServerErrorException;
 import org.springframework.web.client.RestTemplate;
 
+import java.io.ByteArrayOutputStream;
 import java.io.File;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.OpenOption;
 import java.nio.file.Path;
@@ -44,11 +48,11 @@ public class TestClientApplication implements CommandLineRunner
 	{
 		createEnvelopeFromPDFWithAnchors();
 
-		//createEnvelopeFromPDFWithCoordinates();
+		createEnvelopeFromPDFWithCoordinates();
 
-		//createEnvelopeFromTemplate();
+		createEnvelopeFromTemplate();
 
-		//getRecipientURL("c45890fa-082a-4c57-a54e-7dfb5174c98d", Paths.get("/Users/mfoulk/Desktop/signed_doc.pdf"));
+		getRecipientURL("c45890fa-082a-4c57-a54e-7dfb5174c98d", Paths.get("/Users/mfoulk/Desktop/signed_doc.pdf"));
 
 		System.exit(0);
 	}
@@ -339,10 +343,29 @@ public class TestClientApplication implements CommandLineRunner
 
 	public byte[] loadFile(String filename) throws Exception
 	{
-		ClassLoader classLoader = getClass().getClassLoader();
+		Resource resource = new ClassPathResource(filename);
+		InputStream is = resource.getInputStream();
+		//InputStream is = this.getClass().getResourceAsStream("classpath:" + filename);
 
-		Path path = Paths.get(classLoader.getResource(filename).getPath());
-		return Files.readAllBytes(path);
+		if (is == null)
+		{
+			throw new Exception("Cannot load document: " + filename);
+		}
+
+		ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+		int nRead;
+		byte[] data = new byte[1024];
+		while ((nRead = is.read(data, 0, data.length)) != -1) {
+			buffer.write(data, 0, nRead);
+		}
+
+		buffer.flush();
+		byte[] doc = buffer.toByteArray();
+
+		//ClassLoader classLoader = this.getClass().getClassLoader();
+		//Path path = Paths.get(classLoader.getResource(filename).getPath());
+		//return Files.readAllBytes(path);
+		return doc;
 	}
 
 	public ResponseEntity<ServiceResponse> get(String urlSuffix, HttpEntity<?> requestEntity) throws Exception

@@ -29,9 +29,8 @@ jar {
 	baseName = 'esignapi-java'
 	version = version
 	manifest {
-		//Attributes('Main-Class': 'com.loanscience.esign.Application')
+		//Attributes('Main-Class': 'com.loanscience.esign.TestClientApplication')
 	}
-
 }
 dependencies {
 	compile('org.springframework.boot:spring-boot-starter')
