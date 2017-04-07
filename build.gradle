@@ -21,12 +21,25 @@ repositories {
 	mavenCentral()
 }
 
+springBoot {
+	executable = true
+}
 
+jar {
+	baseName = 'esignapi-java'
+	version = version
+	manifest {
+		//Attributes('Main-Class': 'com.loanscience.esign.Application')
+	}
+
+}
 dependencies {
 	compile('org.springframework.boot:spring-boot-starter')
 	compile('org.springframework.boot:spring-boot-starter-web')
 
 	compile files('lib/esignlib.jar')
+
+	compile('com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.8.2')
 
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 }

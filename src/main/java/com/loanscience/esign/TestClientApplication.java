@@ -3,6 +3,7 @@ package com.loanscience.esign;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.loanscience.esign.client.model.*;
+import com.loanscience.esign.util.Json;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.boot.SpringApplication;
@@ -14,6 +15,7 @@ import org.springframework.web.client.RestTemplate;
 
 import java.io.File;
 import java.nio.file.Files;
+import java.nio.file.OpenOption;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
@@ -42,9 +44,11 @@ public class TestClientApplication implements CommandLineRunner
 	{
 		createEnvelopeFromPDFWithAnchors();
 
-		createEnvelopeFromPDFWithCoordinates();
+		//createEnvelopeFromPDFWithCoordinates();
 
-		createEnvelopeFromTemplate();
+		//createEnvelopeFromTemplate();
+
+		//getRecipientURL("c45890fa-082a-4c57-a54e-7dfb5174c98d", Paths.get("/Users/mfoulk/Desktop/signed_doc.pdf"));
 
 		System.exit(0);
 	}
@@ -304,7 +308,13 @@ public class TestClientApplication implements CommandLineRunner
 	}
 
 
-
+	public void getRecipientURL(String envelopeid, Path output) throws Exception
+	{
+		get("/envelope/" + envelopeid + "/combined", new HttpEntity<>(getHeaders()));
+		DownloadDocument downloadDocument = lastResponse.getBody().DeserializeReturnObject(DownloadDocument.class);
+		byte[] doc = downloadDocument.getDocument();
+		Files.write(output, doc);
+	}
 
 
 
@@ -381,6 +391,11 @@ public class TestClientApplication implements CommandLineRunner
 		{
 			throw new Exception("No response was returned");
 		}
+		if (lastResponse.hasBody() && lastResponse.getBody() != null)
+		{
+			print(Json.toJson(lastResponse.getBody()));
+		}
+
 		if (lastResponse.getStatusCode() != HttpStatus.OK)
 		{
 			String error = "";
