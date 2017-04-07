@@ -1,0 +1,7 @@
+esignapi:
+  baseURL: https://esign.loanscience.com
+  client:
+    apikey: xxyyzz==
+    name: "test user's name"
+    email: "test user's email"
+    templateID: E06C713F-D6C3-4D19-9D3B-42B29EB0BDA6
