@@ -52,7 +52,9 @@ public class TestClientApplication implements CommandLineRunner
 
 		createEnvelopeFromTemplate();
 
-		getRecipientURL("c45890fa-082a-4c57-a54e-7dfb5174c98d", Paths.get("/Users/mfoulk/Desktop/signed_doc.pdf"));
+		getRecipientURL("c45890fa-082a-4c57-a54e-7dfb5174c98d");
+
+		downloadDocument("c45890fa-082a-4c57-a54e-7dfb5174c98d", Paths.get("/Users/mfoulk/Desktop/signed_doc.pdf"));
 
 		System.exit(0);
 	}
@@ -312,7 +314,7 @@ public class TestClientApplication implements CommandLineRunner
 	}
 
 
-	public void getRecipientURL(String envelopeid, Path output) throws Exception
+	public void downloadDocument(String envelopeid, Path output) throws Exception
 	{
 		get("/envelope/" + envelopeid + "/combined", new HttpEntity<>(getHeaders()));
 		DownloadDocument downloadDocument = lastResponse.getBody().DeserializeReturnObject(DownloadDocument.class);
